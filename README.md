@@ -14,39 +14,135 @@ A professional Python quiz application that demonstrates software engineering be
 ## 📁 Project Structure
 
 ```
-quiz_app/
+Quiz_app/
 │
-├── main.py                          # Entry point for the app
-├── README.md                        # Project description
-├── .gitignore                       # Ignore .pyc, __pycache__, env folders etc.
+├── main.py                          # Application entry point
+├── demo_quiz.py                     # Demo quiz implementation
+├── README.md                        # Project documentation
+├── reflection.md                    # Project reflection and insights
+├── requirements.txt                 # Python dependencies
+├── .gitignore                       # Git ignore patterns
 │
-├── quiz/                            # Core quiz package
-│   ├── __init__.py                  # Package initialization
-│   ├── questions.py                 # Question objects (Factory pattern)
-│   ├── quiz_manager.py              # Quiz state, timer, score (Singleton)
-│   ├── ui.py                        # Display questions and collect answers
-│   └── observer.py                  # Observer pattern for notifications
+├── models/                          # Data models layer
+│   ├── __init__.py
+│   ├── question.py                  # Question base class and types
+│   └── user.py                      # User model
 │
-└── tests/                           # Unit tests
-    ├── test_questions.py           # Tests for question objects and factory
-    └── test_quiz_manager.py        # Tests for quiz manager and singleton
+├── patterns/                        # Design patterns implementation
+│   ├── __init__.py
+│   ├── factory.py                   # Factory pattern for question creation
+│   ├── observer.py                  # Observer pattern interfaces
+│   └── singleton.py                 # Singleton pattern utilities
+│
+├── services/                        # Business logic layer
+│   ├── __init__.py
+│   ├── quiz_manager.py              # Quiz state management (Singleton)
+│   └── ui.py                        # User interface service
+│
+├── utils/                           # Utility modules
+│   ├── __init__.py
+│   └── timer.py                     # Timer implementation (Subject)
+│
+├── quiz/                            # Legacy quiz package
+│   ├── __init__.py
+│   ├── questions.py                 # Question factory implementation
+│   ├── quiz_manager.py              # Quiz manager implementation
+│   ├── ui.py                        # UI implementation
+│   ├── observer.py                  # Observer implementations
+│   └── console_observer.py          # Console notification observer
+│
+├── tests/                           # Test suite
+│   ├── __init__.py
+│   ├── test_question_pytest.py      # Pytest tests for Question model
+│   ├── test_quiz_manager_pytest.py  # Pytest tests for QuizManager
+│   ├── test_observer_pytest.py      # Pytest tests for Observer pattern
+│   ├── test_timer_pytest.py         # Pytest tests for Timer utility
+│   ├── test_questions.py            # Unittest tests for questions
+│   ├── test_quiz_manager.py         # Unittest tests for quiz manager
+│   └── test_quiz.py                 # Integration tests
+│
+└── demos/                           # Demo and example scripts
+    └── demo_quiz_run.py             # Manual testing script
 ```
+
+## 🏛️ Architecture
+
+### Clean Architecture Layers
+
+**Models Layer (`models/`)**
+
+- **question.py**: Question base class and concrete implementations (MCQ, True/False, Short Answer)
+- **user.py**: User model with score tracking and quiz history
+
+**Patterns Layer (`patterns/`)**
+
+- **factory.py**: Factory pattern for creating different question types
+- **observer.py**: Observer pattern interfaces (Subject, Observer)
+- **singleton.py**: Singleton pattern utilities and decorators
+
+**Services Layer (`services/`)**
+
+- **quiz_manager.py**: Core quiz state management (Singleton, Subject, Observer)
+- **ui.py**: User interface service for quiz interaction
+
+**Utils Layer (`utils/`)**
+
+- **timer.py**: Thread-safe timer implementation (Subject)
+
+### Legacy Package (`quiz/`)
+
+- **questions.py**: Question factory implementation
+- **quiz_manager.py**: Quiz manager implementation
+- **ui.py**: UI implementation
+- **observer.py**: Observer implementations (ScoreObserver, TimeObserver, QuizCompletionObserver)
+- **console_observer.py**: Console notification observer
+
+### Tests Package (`tests/`)
+
+- **test_question_pytest.py**: Pytest tests for Question model
+- **test_quiz_manager_pytest.py**: Pytest tests for QuizManager
+- **test_observer_pytest.py**: Pytest tests for Observer pattern
+- **test_timer_pytest.py**: Pytest tests for Timer utility
+- **test_questions.py**: Unittest tests for questions
+- **test_quiz_manager.py**: Unittest tests for quiz manager
+- **test_quiz.py**: Integration tests
+
+## 📝 Coding Standards
+
+- **Indentation**: 4 spaces, no tabs
+- **Naming**: snake_case for functions/variables, CamelCase for classes
+- **Documentation**: Google-style docstrings for all public functions/classes
+- **Error Handling**: Proper exception handling with clear error messages
+- **Type Hints**: Comprehensive type annotations throughout
+- **Thread Safety**: Thread-safe operations where needed
+
+## 🎓 Learning Objectives
+
+This project demonstrates:
+
+- **Software Design Patterns**: Factory, Singleton, Observer
+- **Clean Architecture**: Separation of concerns, modular design
+- **Professional Practices**: Error handling, testing, documentation
+- **Python Best Practices**: Type hints, docstrings, code organization
+- **Thread Safety**: Proper concurrent access handling
+
+Perfect for learning advanced Python concepts and software engineering principles!
 
 ## 🏗️ Design Patterns Implemented
 
-### 1. Factory Pattern (`quiz/questions.py`)
+### 1. Factory Pattern (`patterns/factory.py`)
 
-- **Purpose**: Create different types of questions (MCQ, True/False)
+- **Purpose**: Create different types of questions (MCQ, True/False, Short Answer)
 - **Benefits**: Encapsulates object creation logic, easy to extend with new question types
 - **Usage**: `QuestionFactory().create_question(question_type, text, correct_answer, ...)`
 
-### 2. Singleton Pattern (`quiz/quiz_manager.py`)
+### 2. Singleton Pattern (`services/quiz_manager.py`)
 
 - **Purpose**: Global quiz state management across the application
 - **Benefits**: Ensures single instance, thread-safe operations
 - **Class**: `QuizManager`
 
-### 3. Observer Pattern (`quiz/observer.py`)
+### 3. Observer Pattern (`patterns/observer.py`)
 
 - **Purpose**: Handle notifications for quiz events (completion, time updates, etc.)
 - **Benefits**: Loose coupling between components, extensible notification system
@@ -57,7 +153,7 @@ quiz_app/
 ### Prerequisites
 
 - Python 3.7 or higher
-- No external dependencies required (uses only standard library)
+- pytest (for running pytest-style tests)
 
 ### Installation
 
@@ -75,7 +171,13 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. Run the application:
+3. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Run the application:
 
 ```bash
 python main.py
@@ -83,8 +185,22 @@ python main.py
 
 ### Running Tests
 
+**Unittest tests:**
+
 ```bash
 python -m unittest discover tests
+```
+
+**Pytest tests:**
+
+```bash
+pytest tests/
+```
+
+**Run all tests with coverage:**
+
+```bash
+pytest tests/ --cov=. --cov-report=html
 ```
 
 ## 📖 Usage
@@ -105,226 +221,39 @@ The application includes comprehensive unit tests covering:
 - **Quiz Manager**: Singleton behavior, quiz flow, state management
 - **Observer Pattern**: Notification system
 - **Thread Safety**: Concurrent access handling
+- **Timer Utility**: Thread-safe timer operations
 
-Run tests with:
+### Test Coverage
+
+**Unittest Tests:**
+
+- `test_questions.py`: Question factory and validation tests
+- `test_quiz_manager.py`: Quiz manager functionality tests
+- `test_quiz.py`: Integration tests
+
+**Pytest Tests:**
+
+- `test_question_pytest.py`: Question model tests with fixtures
+- `test_quiz_manager_pytest.py`: QuizManager service tests
+- `test_observer_pytest.py`: Observer pattern tests
+- `test_timer_pytest.py`: Timer utility tests
+
+### Running Tests
+
+**Unittest tests:**
 
 ```bash
 python -m unittest discover tests
 ```
 
-## 🏛️ Architecture
+**Pytest tests:**
 
-### Quiz Package (`quiz/`)
-
-- **questions.py**: Question objects with Factory pattern
-- **quiz_manager.py**: Singleton for quiz state management
-- **ui.py**: User interface and interaction handling
-- **observer.py**: Observer pattern implementation
-
-### Tests Package (`tests/`)
-
-- **test_questions.py**: Tests for question objects and factory
-- **test_quiz_manager.py**: Tests for quiz manager and singleton
-
-## 📝 Coding Standards
-
-- **Indentation**: 4 spaces, no tabs
-- **Naming**: snake_case for functions/variables, CamelCase for classes
-- **Documentation**: Google-style docstrings for all public functions/classes
-- **Error Handling**: Proper exception handling with clear error messages
-- **Type Hints**: Comprehensive type annotations throughout
-- **Thread Safety**: Thread-safe operations where needed
-
-## 🔧 Extending the Application
-
-### Adding New Question Types
-
-1. Create a new question class inheriting from `Question`
-2. Implement required abstract methods
-3. Add creation logic to `QuestionFactory`
-4. Update the factory's supported types list
-5. Add corresponding tests
-
-### Adding New Features
-
-1. Follow the existing modular structure
-2. Implement appropriate design patterns
-3. Add comprehensive tests
-4. Update documentation
-
-## 🤝 Contributing
-
-1. Follow the established coding standards
-2. Add tests for new functionality
-3. Update documentation as needed
-4. Ensure all tests pass before submitting
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🎓 Learning Objectives
-
-This project demonstrates:
-
-- **Software Design Patterns**: Factory, Singleton, Observer
-- **Clean Architecture**: Separation of concerns, modular design
-- **Professional Practices**: Error handling, testing, documentation
-- **Python Best Practices**: Type hints, docstrings, code organization
-- **Thread Safety**: Proper concurrent access handling
-
-Perfect for learning advanced Python concepts and software engineering principles!
-
-## 📊 Class Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                           QUIZ APP ARCHITECTURE                                              │
-└─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                           PATTERNS LAYER                                                     │
-├─────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                                             │
-│  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐                            │
-│  │     Subject         │    │     Observer        │    │  QuestionFactory    │                            │
-│  │  (Abstract)         │    │   (Abstract)        │    │                     │                            │
-│  ├─────────────────────┤    ├─────────────────────┤    ├─────────────────────┤                            │
-│  │ - _observers: List  │    │ + update(subject,   │    │ - supported_types   │                            │
-│  │                     │    │   data): None       │    │                     │                            │
-│  ├─────────────────────┤    │   (abstract)        │    ├─────────────────────┤                            │
-│  │ + attach(observer)  │    └─────────────────────┘    │ + create_question() │                            │
-│  │ + detach(observer)  │              ▲                │ + create_mcq()      │                            │
-│  │ + notify(data)      │              │                │ + create_true_false()│                           │
-│  └─────────────────────┘              │                │ + create_short_answer()│                         │
-│              ▲                        │                │ + create_mcq()      │                         │
-│              │                        │                              │                                    │
-│              │                        │                              │                                    │
-└──────────────┼────────────────────────┼──────────────────────────────┼────────────────────────────────────┘
-               │                        │                              │
-               │                        │                              │
-┌──────────────┼────────────────────────┼──────────────────────────────┼────────────────────────────────────┐
-│              │                        │                              │                                    │
-│  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐                            │
-│  │     Timer           │    │   QuizManager       │    │                     │                            │
-│  │  (Subject)          │    │ (Subject, Observer) │    │                     │                            │
-│  ├─────────────────────┤    ├─────────────────────┤    │                     │                            │
-│  │ - duration: int     │    │ - questions: List   │    │                     │                            │
-│  │ - remaining_time    │    │ - current_question_ │    │                     │                            │
-│  │ - start_time        │    │   index: int        │    │                     │                            │
-│  │ - end_time          │    │ - current_user: User│    │                     │                            │
-│  │ - is_running        │    │ - timer: Timer      │    │                     │                            │
-│  │ - is_expired        │    │ - quiz_active: bool │    │                     │                            │
-│  │ - _timer_thread     │    │ - quiz_duration: int│    │                     │                            │
-│  │ - _stop_event       │    ├─────────────────────┤    │                     │                            │
-│  ├─────────────────────┤    │ + load_questions()  │    │                     │                            │
-│  │ + start()           │    │ + start_quiz()      │    │                     │                            │
-│  │ + stop()            │    │ + get_current_question()│                     │                            │
-│  │ + pause()           │    │ + submit_answer()   │    │                     │                            │
-│  │ + resume()          │    │ + next_question()   │    │                     │                            │
-│  │ + get_remaining_time()│  │ + end_quiz()        │    │                     │                            │
-│  │ + get_elapsed_time()│    │ + get_quiz_progress()│   │                     │                            │
-│  │ + is_time_expired() │    │ + update()          │    │                     │                            │
-│  │ + is_time_up()      │    └─────────────────────┘    │                     │                            │
-│  │ + reset()           │              │                │                     │                            │
-│  │ - _countdown()      │              │                │                     │                            │
-│  └─────────────────────┘              │                │                     │                            │
-│              │                        │                │                     │                            │
-│              │                        │                │                     │                            │
-└──────────────┼────────────────────────┼────────────────┼─────────────────────┼────────────────────────────┘
-               │                        │                │                     │
-               │                        │                │                     │
-┌──────────────┼────────────────────────┼────────────────┼─────────────────────┼────────────────────────────┐
-│              │                        │                │                     │                            │
-│  ┌─────────────────────┐    ┌─────────────────────┐    │  ┌─────────────────────┐                        │
-│  │       User          │    │      Question       │    │  │  QuizCompletionObserver│                      │
-│  │                     │    │                     │    │  │  (Observer)         │                        │
-│  ├─────────────────────┤    ├─────────────────────┤    │  ├─────────────────────┤                        │
-│  │ - name: str         │    │ - text: str         │    │  │ - name: str         │                        │
-│  │ - current_score: int│    │ - question_type: str│    │  ├─────────────────────┤                        │
-│  │ - total_score: int  │    │ - options: List     │    │  │ + update()          │                        │
-│  │ - quizzes_taken: int│    │ - correct_answer: Any│   │  └─────────────────────┘                        │
-│  ├─────────────────────┤    │ - points: int       │    │                              │                    │
-│  │ + start_new_quiz()  │    │ - explanation: str  │    │  ┌─────────────────────┐                        │
-│  │ + add_points()      │    ├─────────────────────┤    │  │    TimeObserver     │                        │
-│  │ + complete_quiz()   │    │ + check_answer()    │    │  │   (Observer)        │                        │
-│  │ + get_average_score()│   │ + get_correct_answer()│  │  ├─────────────────────┤                        │
-│  └─────────────────────┘    │ + display_question()│    │  │ - name: str         │                        │
-│                             └─────────────────────┘    │  ├─────────────────────┤                        │
-│                                      ▲                  │  │ + update()          │                        │
-│                                      │                  │  └─────────────────────┘                        │
-│                                      │                              │                                    │
-│                                      │                              │                                    │
-│                                      │                  ┌─────────────────────┐                        │
-│                                      │                  │   ScoreObserver     │                        │
-│                                      │                  │   (Observer)        │                        │
-│                                      │                  ├─────────────────────┤                        │
-│                                      │                  │ + update()          │                        │
-│                                      │                  └─────────────────────┘                        │
-│                                      │                                                                   │
-└──────────────────────────────────────┼───────────────────────────────────────────────────────────────────┘
-                                       │
-                                       │
-┌──────────────────────────────────────┼───────────────────────────────────────────────────────────────────┐
-│                                       │                                                                    │
-│  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │                                    UI LAYER                                                          │  │
-│  │                                                                                                     │  │
-│  │  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐                    │  │
-│  │  │     QuizUI          │    │     main.py         │    │   ConsoleObserver   │                    │  │
-│  │  │                     │    │                     │    │   (Observer)        │                    │  │
-│  │  ├─────────────────────┤    ├─────────────────────┤    ├─────────────────────┤                    │  │
-│  │  │ - quiz_manager      │    │ - quiz_manager      │    │ + update()          │                    │  │
-│  │  ├─────────────────────┤    │ - question_factory  │    └─────────────────────┘                    │  │
-│  │  │ + display_welcome() │    │ - observers         │                                               │  │
-│  │  │ + get_user_name()   │    ├─────────────────────┤                                               │  │
-│  │  │ + display_question()│    │ + main()            │                                               │  │
-│  │  │ + get_user_answer() │    │ + setup_quiz()      │                                               │  │
-│  │  │ + display_result()  │    │ + attach_observers()│                                               │  │
-│  │  │ + display_progress()│    └─────────────────────┘                                               │  │
-│  │  │ + display_final_results()│                                                                      │  │
-│  │  │ + run()             │                                                                           │  │
-│  │  └─────────────────────┘                                                                           │  │
-│  └─────────────────────────────────────────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                           RELATIONSHIPS                                                      │
-├─────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                                             │
-│  Inheritance (extends):                                                                                     │
-│  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐   │
-│  │ • Timer extends Subject                                                                               │   │
-│  │ • QuizManager extends Subject and Observer                                                            │   │
-│  │ • QuizCompletionObserver, TimeObserver, ScoreObserver extend Observer                                 │   │
-│  └─────────────────────────────────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                                             │
-│  Associations (uses/contains):                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐   │
-│  │ • QuizManager uses Timer (1:1)                                                                        │   │
-│  │ • QuizManager uses User (1:1)                                                                          │   │
-│  │ • QuizManager contains Questions (1:many)                                                             │   │
-│  │ • QuizManager notifies Observers (1:many)                                                             │   │
-│  │ • Timer notifies Observers (1:many)                                                                   │   │
-│  │ • QuestionFactory creates Questions (1:many)                                                          │   │
-│  │ • QuizUI uses QuizManager (1:1)                                                                        │   │
-│  │ • main.py orchestrates all components                                                                │   │
-│  └─────────────────────────────────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                                             │
-│  Design Patterns Implemented:                                                                               │
-│  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐   │
-│  │ • Factory Pattern: QuestionFactory creates different Question types                                  │   │
-│  │ • Observer Pattern: Subject/Observer for event notifications                                        │   │
-│  │ • Service Layer: QuizManager as core service                                                         │   │
-│  │ • Model-View-Controller: Separation of concerns                                                      │   │
-│  └─────────────────────────────────────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```bash
+pytest tests/
 ```
 
-### **🎯 Architecture Overview**
+**Run all tests with coverage:**
 
-- **Service Layer**: QuizManager as core service with Timer integration
-- **Factory Pattern**: QuestionFactory creates Question objects
-- **Observer Pattern**: Real-time event notifications (Score, Time, Completion)
-- **Thread Safety**: Background timer with observer integration
-- **Clean Architecture**: Separation of concerns across layers
+```bash
+pytest tests/ --cov=. --cov-report=html
+```
