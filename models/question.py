@@ -82,8 +82,7 @@ class Question:
 
     
     def check_answer(self, user_answer: str | bool) -> bool:
-
-                """
+        """
         Check if the user's answer is correct.
 
         Args:

@@ -12,12 +12,13 @@ from utils.timer import Timer
 from patterns.observer import Subject, Observer
 
 
-class QuizManager(Subject):
+class QuizManager(Subject, Observer):
     """
     Manages the overall quiz flow and state.
     
     Handles loading questions, starting quizzes, checking answers,
-    and managing the quiz lifecycle.
+    and managing the quiz lifecycle. Implements both Subject and Observer
+    patterns for notifications and time expiration handling.
     """
     
     def __init__(self):
@@ -71,6 +72,7 @@ class QuizManager(Subject):
             self.quiz_duration = duration
         # Initialize timer
         self.timer = Timer(self.quiz_duration)
+        self.timer.attach(self)
         self.timer.start()
         # Reset user score for new quiz
         user.start_new_quiz()
@@ -112,6 +114,14 @@ class QuizManager(Subject):
             if not self.quiz_active:
                 raise ValueError("No active quiz")
             
+            if self.timer and self.timer.is_time_up():
+                self.end_quiz()
+                return {
+                    'correct': False,
+                    'points_earned': 0,
+                    'error': 'Time is up! Quiz ended.'
+                }
+            
             current_question = self.get_current_question()
             if not current_question:
                 raise ValueError("No current question")
@@ -128,7 +138,8 @@ class QuizManager(Subject):
                 'correct': is_correct,
                 'points_earned': points_earned,
                 'correct_answer': current_question.get_correct_answer(),
-                'explanation': current_question.explanation
+                'explanation': current_question.explanation,
+                'current_score': self.current_user.current_score if self.current_user else 0
             }
             
             # Move to next question
@@ -186,7 +197,17 @@ class QuizManager(Subject):
         """
         try:
             if not self.quiz_active:
-                raise ValueError("No active quiz to end")
+                print("[⚠️] Quiz already ended — returning final results.")
+                total_questions = len(self.questions)
+                answered_questions = min(self.current_question_index, total_questions)
+                score = self.current_user.current_score if self.current_user else 0
+                return {
+                    'total_questions': total_questions,
+                    'answered_questions': answered_questions,
+                    'final_score': score,
+                    'user_name': self.current_user.name if self.current_user else 'Unknown',
+                    'elapsed_time': self.timer.get_elapsed_time() if self.timer else 0
+                }
             
             self.quiz_active = False
             
@@ -207,7 +228,8 @@ class QuizManager(Subject):
                 'total_questions': total_questions,
                 'answered_questions': answered_questions,
                 'final_score': score,
-                'user_name': self.current_user.name if self.current_user else 'Unknown'
+                'user_name': self.current_user.name if self.current_user else 'Unknown',
+                'elapsed_time': self.timer.get_elapsed_time() if self.timer else 0
             }
             
             print(f"Quiz ended. Final score: {score}")
@@ -223,6 +245,22 @@ class QuizManager(Subject):
             print(f"Error ending quiz: {e}")
             return {}
     
+    def update(self, subject: Subject, data: Any = None) -> None:
+        """
+        Handle updates from observed subjects (e.g., Timer).
+        
+        Args:
+            subject (Subject): The subject that sent the update
+            data (Any): Data sent by the subject
+        """
+        try:
+            if isinstance(data, dict) and data.get("time_expired") is True:
+                if self.quiz_active:
+                    print("\n⏰ Time is up! Automatically ending quiz...")
+                    self.end_quiz()
+        except Exception as e:
+            print(f"Error handling timer update: {e}")
+    
     def get_quiz_progress(self) -> Dict[str, Any]:
         """
         Get current quiz progress information.
@@ -233,6 +271,10 @@ class QuizManager(Subject):
         try:
             if not self.quiz_active:
                 return {'active': False}
+            
+            if self.timer and self.timer.is_time_expired():
+                self.quiz_active = False
+                return {'active': False, 'error': 'Time is up'}
             
             remaining_time = self.timer.get_remaining_time() if self.timer else 0
             

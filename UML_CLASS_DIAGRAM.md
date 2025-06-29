@@ -1,181 +1,6 @@
-# Quiz Application
+# Quiz App - Production-Ready Architecture Class Diagram
 
-A professional Python quiz application that demonstrates software engineering best practices and design patterns.
-
-## 🎯 Features
-
-- **Multiple Question Types**: Support for Multiple Choice and True/False questions
-- **Design Patterns**: Implementation of Factory, Singleton, and Observer patterns
-- **Professional Structure**: Clean, modular code following software engineering principles
-- **Comprehensive Testing**: Unit tests for all major components
-- **Thread-Safe Operations**: Thread-safe quiz management with proper locking
-- **Documentation**: Google-style docstrings throughout the codebase
-
-## 📁 Project Structure
-
-```
-quiz_app/
-│
-├── main.py                          # Entry point for the app
-├── README.md                        # Project description
-├── .gitignore                       # Ignore .pyc, __pycache__, env folders etc.
-│
-├── quiz/                            # Core quiz package
-│   ├── __init__.py                  # Package initialization
-│   ├── questions.py                 # Question objects (Factory pattern)
-│   ├── quiz_manager.py              # Quiz state, timer, score (Singleton)
-│   ├── ui.py                        # Display questions and collect answers
-│   └── observer.py                  # Observer pattern for notifications
-│
-└── tests/                           # Unit tests
-    ├── test_questions.py           # Tests for question objects and factory
-    └── test_quiz_manager.py        # Tests for quiz manager and singleton
-```
-
-## 🏗️ Design Patterns Implemented
-
-### 1. Factory Pattern (`quiz/questions.py`)
-
-- **Purpose**: Create different types of questions (MCQ, True/False)
-- **Benefits**: Encapsulates object creation logic, easy to extend with new question types
-- **Usage**: `QuestionFactory().create_question(question_type, text, correct_answer, ...)`
-
-### 2. Singleton Pattern (`quiz/quiz_manager.py`)
-
-- **Purpose**: Global quiz state management across the application
-- **Benefits**: Ensures single instance, thread-safe operations
-- **Class**: `QuizManager`
-
-### 3. Observer Pattern (`quiz/observer.py`)
-
-- **Purpose**: Handle notifications for quiz events (completion, time updates, etc.)
-- **Benefits**: Loose coupling between components, extensible notification system
-- **Usage**: Attach observers to subjects for real-time updates
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Python 3.7 or higher
-- No external dependencies required (uses only standard library)
-
-### Installation
-
-1. Clone the repository:
-
-```bash
-git clone <repository-url>
-cd quiz_app
-```
-
-2. Create a virtual environment:
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Run the application:
-
-```bash
-python main.py
-```
-
-### Running Tests
-
-```bash
-python -m unittest discover tests
-```
-
-## 📖 Usage
-
-1. **Start the Application**: Run `python main.py`
-2. **Enter Your Name**: Provide your name when prompted
-3. **Answer Questions**:
-   - Multiple Choice: Enter the number (1, 2, 3, 4)
-   - True/False: Enter 1 for True, 2 for False
-4. **View Results**: See your score and completion time
-
-## 🧪 Testing
-
-The application includes comprehensive unit tests covering:
-
-- **Question Objects**: Creation, validation, answer checking
-- **Factory Pattern**: Question creation, error handling
-- **Quiz Manager**: Singleton behavior, quiz flow, state management
-- **Observer Pattern**: Notification system
-- **Thread Safety**: Concurrent access handling
-
-Run tests with:
-
-```bash
-python -m unittest discover tests
-```
-
-## 🏛️ Architecture
-
-### Quiz Package (`quiz/`)
-
-- **questions.py**: Question objects with Factory pattern
-- **quiz_manager.py**: Singleton for quiz state management
-- **ui.py**: User interface and interaction handling
-- **observer.py**: Observer pattern implementation
-
-### Tests Package (`tests/`)
-
-- **test_questions.py**: Tests for question objects and factory
-- **test_quiz_manager.py**: Tests for quiz manager and singleton
-
-## 📝 Coding Standards
-
-- **Indentation**: 4 spaces, no tabs
-- **Naming**: snake_case for functions/variables, CamelCase for classes
-- **Documentation**: Google-style docstrings for all public functions/classes
-- **Error Handling**: Proper exception handling with clear error messages
-- **Type Hints**: Comprehensive type annotations throughout
-- **Thread Safety**: Thread-safe operations where needed
-
-## 🔧 Extending the Application
-
-### Adding New Question Types
-
-1. Create a new question class inheriting from `Question`
-2. Implement required abstract methods
-3. Add creation logic to `QuestionFactory`
-4. Update the factory's supported types list
-5. Add corresponding tests
-
-### Adding New Features
-
-1. Follow the existing modular structure
-2. Implement appropriate design patterns
-3. Add comprehensive tests
-4. Update documentation
-
-## 🤝 Contributing
-
-1. Follow the established coding standards
-2. Add tests for new functionality
-3. Update documentation as needed
-4. Ensure all tests pass before submitting
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🎓 Learning Objectives
-
-This project demonstrates:
-
-- **Software Design Patterns**: Factory, Singleton, Observer
-- **Clean Architecture**: Separation of concerns, modular design
-- **Professional Practices**: Error handling, testing, documentation
-- **Python Best Practices**: Type hints, docstrings, code organization
-- **Thread Safety**: Proper concurrent access handling
-
-Perfect for learning advanced Python concepts and software engineering principles!
-
-## 📊 Class Diagram
+## Updated UML Class Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -197,7 +22,7 @@ Perfect for learning advanced Python concepts and software engineering principle
 │  │ + detach(observer)  │              ▲                │ + create_mcq()      │                            │
 │  │ + notify(data)      │              │                │ + create_true_false()│                           │
 │  └─────────────────────┘              │                │ + create_short_answer()│                         │
-│              ▲                        │                │ + create_mcq()      │                         │
+│              ▲                        │                └─────────────────────┘                            │
 │              │                        │                              │                                    │
 │              │                        │                              │                                    │
 └──────────────┼────────────────────────┼──────────────────────────────┼────────────────────────────────────┘
@@ -259,6 +84,8 @@ Perfect for learning advanced Python concepts and software engineering principle
 │                                      │                  │   ScoreObserver     │                        │
 │                                      │                  │   (Observer)        │                        │
 │                                      │                  ├─────────────────────┤                        │
+│                                      │                  │ - name: str         │                        │
+│                                      │                  ├─────────────────────┤                        │
 │                                      │                  │ + update()          │                        │
 │                                      │                  └─────────────────────┘                        │
 │                                      │                                                                   │
@@ -319,12 +146,75 @@ Perfect for learning advanced Python concepts and software engineering principle
 │  │ • Model-View-Controller: Separation of concerns                                                      │   │
 │  └─────────────────────────────────────────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                           KEY FEATURES                                                      │
+├─────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                             │
+│  ✅ QuizManager as Service Layer:                                                                          │
+│     • Manages quiz state and flow                                                                          │
+│     • Implements both Subject and Observer patterns                                                       │
+│     • Handles timer integration and automatic quiz ending                                                 │
+│     • Uses User objects and Timer integration                                                             │
+│                                                                                                             │
+│  ✅ Timer with Observer Integration:                                                                       │
+│     • Thread-safe countdown timer                                                                          │
+│     • Automatic time expiration handling                                                                   │
+│     • Real-time notifications to observers                                                                │
+│     • Background thread for countdown                                                                      │
+│                                                                                                             │
+│  ✅ Factory Pattern for Questions:                                                                         │
+│     • Creates MCQ, True/False, and Short Answer questions                                                │
+│     • Validates question parameters                                                                        │
+│     • Extensible for new question types                                                                   │
+│                                                                                                             │
+│  ✅ Observer Pattern for Notifications:                                                                   │
+│     • ScoreObserver: Tracks score changes                                                                 │
+│     • TimeObserver: Monitors time events                                                                   │
+│     • QuizCompletionObserver: Handles quiz completion                                                    │
+│     • ConsoleObserver: General notifications                                                              │
+│                                                                                                             │
+│  ✅ Clean Architecture:                                                                                    │
+│     • Separation of concerns                                                                               │
+│     • Modular design                                                                                       │
+│     • Professional code organization                                                                       │
+│     • Service layer architecture                                                                           │
+│                                                                                                             │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### **🎯 Architecture Overview**
+## Architecture Highlights
 
-- **Service Layer**: QuizManager as core service with Timer integration
+### **🎯 Production-Ready Features**
+
+1. **Service Layer Architecture**: QuizManager as the core service
+2. **Observer Pattern**: Real-time event notifications
+3. **Factory Pattern**: Flexible question creation
+4. **Thread-Safe Timer**: Background countdown with notifications
+5. **Clean Separation**: Models, Services, Patterns, UI layers
+
+### **🔧 Key Components**
+
+- **QuizManager**: Core service managing quiz flow and state
+- **Timer**: Thread-safe countdown with observer notifications
+- **QuestionFactory**: Creates different question types
+- **Observers**: Real-time event handling (Score, Time, Completion)
+- **QuizUI**: User interface layer
+- **Models**: User and Question data models
+
+### **📊 Design Patterns**
+
 - **Factory Pattern**: QuestionFactory creates Question objects
-- **Observer Pattern**: Real-time event notifications (Score, Time, Completion)
-- **Thread Safety**: Background timer with observer integration
-- **Clean Architecture**: Separation of concerns across layers
+- **Observer Pattern**: Event-driven notifications
+- **Service Layer**: QuizManager as central service
+- **MVC Pattern**: Separation of concerns
+
+### **🚀 Production Architecture Notes**
+
+- **No Singleton Pattern**: QuizManager is a service, not a singleton
+- **Timer Integration**: QuizManager implements Observer to handle timer expiration
+- **User Management**: Proper User object integration with score tracking
+- **Thread Safety**: Timer uses background threads for countdown
+- **Event-Driven**: Real-time notifications for all quiz events
+
+This architecture demonstrates professional software engineering practices with clean separation of concerns, proper design patterns, and production-ready code quality! 🚀

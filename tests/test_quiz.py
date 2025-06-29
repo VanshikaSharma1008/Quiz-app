@@ -223,6 +223,35 @@ class TestQuizManager(unittest.TestCase):
         self.assertEqual(results['final_score'], 10)
         self.assertEqual(results['total_questions'], 2)
         self.assertEqual(results['answered_questions'], 1)
+    
+    def test_answer_after_time_expires(self):
+        """Test that answer submission is blocked after timeout."""
+        self.quiz_manager.load_questions(self.questions)
+        self.quiz_manager.start_quiz(self.user, duration=1)
+        
+        # Simulate time passing by directly setting the timer as expired
+        if self.quiz_manager.timer:
+            self.quiz_manager.timer.is_expired = True
+            self.quiz_manager.timer.is_running = False
+
+        result = self.quiz_manager.submit_answer("Stack")
+        self.assertFalse(result['correct'])
+        self.assertIn('error', result)
+        print("✅ Passed: Answer not accepted after time expired.")
+    
+    def test_automatic_quiz_end_on_time_expiration(self):
+        """Test that quiz automatically ends when timer expires."""
+        self.quiz_manager.load_questions(self.questions)
+        self.quiz_manager.start_quiz(self.user, duration=1)
+        
+        # Simulate timer sending time_expired notification
+        if self.quiz_manager.timer:
+            timer_data = {"time_expired": True}
+            self.quiz_manager.update(self.quiz_manager.timer, timer_data)
+            
+            # Quiz should be automatically ended
+            self.assertFalse(self.quiz_manager.quiz_active)
+            print("✅ Passed: Quiz automatically ended when time expired.")
 
 
 class TestTimer(unittest.TestCase):

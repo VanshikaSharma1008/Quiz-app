@@ -163,6 +163,15 @@ class Timer(Subject):
             print(f"Error checking if time expired: {e}")
             return False
     
+    def is_time_up(self) -> bool:
+        """
+        Check if the timer has expired (alias for is_time_expired).
+        
+        Returns:
+            bool: True if timer has expired, False otherwise
+        """
+        return self.is_time_expired()
+    
     def _countdown(self) -> None:
         """Internal countdown method running in separate thread."""
         try:

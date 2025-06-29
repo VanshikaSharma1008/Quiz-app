@@ -7,8 +7,9 @@ and presentation of quiz results and progress information.
 
 import sys
 from typing import Any, Optional
-from .quiz_manager import QuizManager
-from .questions import Question
+from services.quiz_manager import QuizManager
+from models.question import Question
+from models.user import User
 
 
 class QuizUI:
@@ -81,14 +82,14 @@ class QuizUI:
             try:
                 answer = input("Your answer: ").strip()
                 
-                if isinstance(question, MultipleChoiceQuestion):
+                if question.question_type == "mcq":
                     choice = int(answer)
                     if 1 <= choice <= len(question.options):
                         return question.options[choice - 1]
                     else:
                         print(f"Please enter a number between 1 and {len(question.options)}")
                 
-                elif isinstance(question, TrueFalseQuestion):
+                elif question.question_type == "true_false":
                     if answer == "1":
                         return True
                     elif answer == "2":
@@ -121,8 +122,9 @@ class QuizUI:
         else:
             print("❌ Incorrect!")
             print(f"Correct answer: {result.get('correct_answer', 'Unknown')}")
-        
+
         print(f"Current score: {result.get('current_score', 0)}")
+        print("-" * 40)
     
     def display_progress(self, progress: dict) -> None:
         """
@@ -132,7 +134,7 @@ class QuizUI:
             progress (dict): Progress information from quiz manager
         """
         if progress.get('active', False):
-            remaining_time = progress.get('remaining_time', 0)
+            remaining_time = int(progress.get('remaining_time', 0))
             minutes = remaining_time // 60
             seconds = remaining_time % 60
             print(f"\nTime remaining: {minutes:02d}:{seconds:02d}")
@@ -164,11 +166,12 @@ class QuizUI:
             # Display welcome
             self.display_welcome()
             
-            # Get user name
+            # Get user name and create User object
             user_name = self.get_user_name()
+            user = User(user_name)
             
             # Start quiz (questions should be loaded by now)
-            if not self.quiz_manager.start_quiz(user_name):
+            if not self.quiz_manager.start_quiz(user):
                 print("Error: Could not start quiz. Exiting.")
                 return
             
@@ -177,6 +180,11 @@ class QuizUI:
             
             # Main quiz loop
             while self.quiz_manager.quiz_active:
+                if self.quiz_manager.timer and self.quiz_manager.timer.is_time_expired():
+                    print("\n⏰ Time is up! The quiz has ended.\n")
+                    self.quiz_manager.quiz_active = False
+                    break
+                
                 current_question = self.quiz_manager.get_current_question()
                 if not current_question:
                     break
@@ -193,9 +201,6 @@ class QuizUI:
                     progress.get('total_questions', 1)
                 )
                 
-                # Display progress
-                self.display_progress(progress)
-                
                 # Get user answer
                 user_answer = self.get_user_answer(current_question)
                 
@@ -203,8 +208,12 @@ class QuizUI:
                 result = self.quiz_manager.submit_answer(user_answer)
                 self.display_result(result)
                 
-                # Check if quiz is complete
-                if not self.quiz_manager.quiz_active:
+                # Display updated progress after answer
+                self.display_progress(self.quiz_manager.get_quiz_progress())
+                
+                # Check if quiz is complete (after answering the last question)
+                if self.quiz_manager.current_question_index >= len(self.quiz_manager.questions):
+                    self.quiz_manager.quiz_active = False
                     break
             
             # Display final results
@@ -215,8 +224,4 @@ class QuizUI:
             print("\n\nQuiz interrupted. Goodbye!")
         except Exception as e:
             print(f"\nAn error occurred: {e}")
-            print("Please try again later.")
-
-
-# Import these here to avoid circular imports
-from .questions import MultipleChoiceQuestion, TrueFalseQuestion 
+            print("Please try again later.") 

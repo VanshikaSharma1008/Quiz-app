@@ -139,7 +139,14 @@ class QuizManager(Subject):
                 'points': points_earned,
                 'current_score': self.current_score
             })
-            self.next_question()
+            
+            # Move to next question
+            self.current_question_index += 1
+            
+            # Check if quiz is complete (but don't end it here)
+            if self.current_question_index >= len(self.questions):
+                # Let the UI handle quiz completion
+                pass
             
             return result
     
