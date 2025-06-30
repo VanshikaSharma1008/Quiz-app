@@ -11,7 +11,11 @@ A professional Python quiz application that demonstrates software engineering be
 - **Thread-Safe Operations**: Thread-safe quiz management with proper locking
 - **Documentation**: Google-style docstrings throughout the codebase
 
-## 📁 Project Structure
+## UML Diagram - Pattern Interactions
+
+![UML Diagram - Pattern Interactions](./diagram.png)
+
+## �� Project Structure
 
 ```
 Quiz_app/
