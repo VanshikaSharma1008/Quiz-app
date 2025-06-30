@@ -14,7 +14,7 @@ In the earlier version, QuizManager was designed as a Singleton to control quiz 
 
 ### 3. Observer Pattern
 
-## I implemented the Observer pattern to loosely couple the quiz logic and event handling. Instead of printing or hardcoding outputs in the core logic, the QuizManager notifies attached observers making it easy to extend with features like live score updates, timers, or analytics in the future.
+I implemented the Observer pattern to loosely couple the quiz logic and event handling. Instead of printing or hardcoding outputs in the core logic, the QuizManager notifies attached observers making it easy to extend with features like live score updates, timers, or analytics in the future.
 
 ## How These Patterns Work Together
 
@@ -51,7 +51,3 @@ This separation made the project feel like a real, scalable system. Adding or re
 ## Final Thoughts
 
 This project helped me think like a software engineer. I didn't just code — I designed. I made sure the system was modular, scalable, and easy to test. It gave me confidence and a strong foundation in Python, software patterns, and professional coding practices.
-
----
-
-_Project completed and successfully pushed to GitHub with comprehensive documentation and testing._
